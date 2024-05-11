@@ -1,4 +1,5 @@
 # [Soft UI Dashboard Laravel](https://soft-ui-dashboard-laravel.creative-tim.com/login)
+# [Download Soft UI Dashboard Laravel](https://www.creative-tim.com/product/soft-ui-dashboard-laravel)
 
 ![version](https://img.shields.io/badge/version-1.0.0-blue.svg) 
 ![license](https://img.shields.io/badge/license-MIT-blue.svg)
@@ -78,6 +79,8 @@ And Laravel: https://laravel.com/docs/10.x
 7. Run `php artisan storage:link` to create the storage symlink (if you are using **Vagrant** with **Homestead** for development, remember to ssh into your virtual machine and run the command from there).
 8. Run `php artisan serve` to Run
 9. Run `composer install --optimize-autoloader --no-dev` to Optimze autolader
+10. Run `php artisan view:clear` to Optimze view clear
+
 
 ## Usage
 Register a user or login with default user **admin@softui.com** and password **secret** from your database and start testing (make sure to run the migrations and seeders for these credentials to be available).
