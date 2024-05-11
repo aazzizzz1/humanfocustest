@@ -76,6 +76,8 @@ And Laravel: https://laravel.com/docs/10.x
 5. In your terminal run `php artisan key:generate`
 6. Run `php artisan migrate --seed` to create the database tables and seed the roles and users tables
 7. Run `php artisan storage:link` to create the storage symlink (if you are using **Vagrant** with **Homestead** for development, remember to ssh into your virtual machine and run the command from there).
+8. Run `php artisan serve` to Run
+9. Run `composer install --optimize-autoloader --no-dev` to Optimze autolader
 
 ## Usage
 Register a user or login with default user **admin@softui.com** and password **secret** from your database and start testing (make sure to run the migrations and seeders for these credentials to be available).
