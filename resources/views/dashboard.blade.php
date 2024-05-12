@@ -15,13 +15,31 @@
         </div>
       </div>
       <div class="col-auto my-auto">
-        <div class="h-100">
-          <h5 class="mb-1">
-            Hasil
-          </h5>
-          <p id="test-result" class="mb-0 font-weight-bold text-sm">
-          </p>
-        </div>
+        <div class="row gx-4 justify-content-between">
+          <div class="col-lg-10">
+            <div class="h-100">
+              <h5 class="mb-1">
+                Hasil
+              </h5>
+              <p id="test-result" class="mb-0 font-weight-bold text-sm">
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-2">
+            <div class="h-100">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Reaction Time (ms)</th>
+                  </tr>
+                </thead>
+                <tbody id="reaction-table-body">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>        
       </div>
     </div>
   </div>
@@ -69,6 +87,7 @@
                             reactionTimes.push(reactionTime);
                             testCount++;
                             $("#test-result").html("Reaksi: " + reactionTime + "ms").show();
+                            $("#reaction-table-body").append("<tr><td>" + testCount + "</td><td>" + reactionTime + "</td></tr>");
 
                             if (testCount === 20) {
                                 clearInterval(testInterval);
@@ -96,7 +115,7 @@
                                 }
 
                                 // Menampilkan hasil tes
-                                $("#test-result").html("<p>Hasil Tes:</p><p>Rata-rata Reaksi: " + averageReactionTime.toFixed(2) + "ms</p><p>" + testResult + "</p>").show();
+                                $("#test-result").html("<p>Waktu Reaksi: " + averageReactionTime.toFixed(2) + "ms</p><h5>Kriteria</h5><p>" + testResult + "</p>").show();
                             } else {
                                 setTimeout(runTest, 2000); // Tes selanjutnya dimulai setelah 2 detik
                             }
@@ -117,4 +136,3 @@
       });
   </script>
 @endpush
-

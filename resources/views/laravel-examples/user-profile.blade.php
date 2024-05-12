@@ -20,10 +20,10 @@
                 <div class="col-auto my-auto">
                     <div class="h-100">
                         <h5 class="mb-1">
-                            {{ __('Alec Thompson') }}
+                            {{ auth()->user()->name }}
                         </h5>
                         <p class="mb-0 font-weight-bold text-sm">
-                            {{ __(' CEO / Co-Founder') }}
+                            {{ auth()->user()->about_me }}
                         </p>
                     </div>
                 </div>
@@ -161,17 +161,17 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="user.location" class="form-control-label">{{ __('Location') }}</label>
+                                <label for="user.location" class="form-control-label">{{ __('Departemen') }}</label>
                                 <div class="@error('user.location') border border-danger rounded-3 @enderror">
-                                    <input class="form-control" type="text" placeholder="Location" id="name" name="location" value="{{ auth()->user()->location }}">
+                                    <input class="form-control" type="text" placeholder="Teknik Perkapalan" id="name" name="location" value="{{ auth()->user()->location }}">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="about">{{ 'About Me' }}</label>
+                        <label for="about">{{ 'Kriteria' }}</label>
                         <div class="@error('user.about')border border-danger rounded-3 @enderror">
-                            <textarea class="form-control" id="about" rows="3" placeholder="Say something about yourself" name="about_me">{{ auth()->user()->about_me }}</textarea>
+                            <textarea class="form-control" id="about" rows="3" placeholder="Kriteria Hasil Tes Kamu" name="about_me">{{ auth()->user()->about_me }}</textarea>
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
