@@ -65,7 +65,7 @@ class InfoUserController extends Controller
     public function downloadPdf($id)
     {
         $pdf = UserPdf::findOrFail($id);
-        $filePath = storage_path('app/' . $pdf->file_path);
+        $filePath = storage_path('app/public/' . $pdf->file_path);
 
         if (file_exists($filePath)) {
             return response()->download($filePath);
