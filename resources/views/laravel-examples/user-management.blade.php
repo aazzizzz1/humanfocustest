@@ -1,4 +1,4 @@
-@extends('layouts.user_type.auth')
+@extends('layouts.user_type.auth', ['page' => __('User Management'), 'pageSlug' => 'users'])
 
 @section('content')
 
@@ -48,6 +48,18 @@
                                         Kriteria
                                     </th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        job 
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        work_location  
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        age  
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        examiner_name  
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Action
                                     </th>
                                 </tr>
@@ -80,16 +92,38 @@
                                             <span class="text-secondary text-xs font-weight-bold">{{ $user->about_me }}</span>
                                         </td>
                                         <td class="text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">{{ $user->job  }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">{{ $user->work_location  }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">{{ $user->age  }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">{{ $user->examiner_name  }}</span>
+                                        </td>
+                                        <td>
+                                            @foreach ($user->pdfs as $pdf)
+                                                <a href="{{ route('download.pdf', $pdf->id) }}" class="btn btn-primary btn-sm">{{ __('Download') }}</a>
+                                            @endforeach
+                                        </td>
+                                        {{-- <td class="text-center">
                                             <a href="#" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit user">
                                                 <i class="fas fa-user-edit text-secondary"></i>
                                             </a>
                                             <span>
                                                 <i class="cursor-pointer fas fa-trash text-secondary"></i>
                                             </span>
-                                        </td>
+                                        </td> --}}
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+                    <div class="card-footer py-4">
+                        <nav class="d-flex justify-content-end" aria-label="...">
+                            {{ $users->links() }}
+                        </nav>
                     </div>
                 </div>
             </div>

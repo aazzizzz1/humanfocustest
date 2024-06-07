@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\View;
+use App\Models\UserPdf;
 
 class InfoUserController extends Controller
 {
@@ -56,7 +57,41 @@ class InfoUserController extends Controller
 
     public function index()
     {
-        $users = User::all();
+        // $users = User::all();
+        $users = User::with('pdfs')->paginate(10); // Mengambil data pengguna beserta relasi PDF
         return view('laravel-examples/user-management', compact('users'));
+    }
+
+    public function downloadPdf($id)
+    {
+        $pdf = UserPdf::findOrFail($id);
+        $filePath = storage_path('app/' . $pdf->file_path);
+
+        if (file_exists($filePath)) {
+            return response()->download($filePath);
+        } else {
+            return response()->json(['error' => 'File tidak ditemukan.'], 404);
+        }
+    }
+
+    public function savePdf(Request $request)
+    {
+        $user = auth()->user();
+
+        if ($request->hasFile('pdf')) {
+            $file = $request->file('pdf');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('pdfs', $fileName);
+
+            UserPdf::create([
+                'user_id' => $user->id,
+                'file_path' => $filePath,
+                'file_name' => $fileName,
+            ]);
+
+            return response()->json(['success' => 'PDF berhasil disimpan.']);
+        }
+
+        return response()->json(['error' => 'Tidak ada file PDF yang diunggah.'], 400);
     }
 }

@@ -87,3 +87,8 @@ Route::group(['middleware' => 'guest'], function () {
 Route::get('/login', function () {
     return view('session/login-session');
 })->name('login');
+
+Route::post('save-pdf', [InfoUserController::class, 'savePdf'])->name('save.pdf')->middleware('auth');
+Route::get('download-pdf/{id}', [InfoUserController::class, 'downloadPdf'])->name('download.pdf')->middleware('auth');
+// Route::get('download-pdf/{id}', [InfoUserController::class, 'downloadPdf'])->name('download.pdf')->middleware('auth');
+// Route::post('save-pdf', [InfoUserController::class, 'savePdf'])->name('save.pdf')->middleware('auth');

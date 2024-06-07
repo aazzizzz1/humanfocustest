@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Sabberworm\CSS\Property\Import;
 
 class User extends Authenticatable
 {
@@ -24,6 +25,10 @@ class User extends Authenticatable
         'phone',
         'location',
         'about_me',
+        'job', 
+        'work_location', 
+        'examiner_name', 
+        'age'
     ];
 
     /**
@@ -45,4 +50,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     
+    public function pdfs()
+    {
+        return $this->hasMany(UserPdf::class);
+    }
 }

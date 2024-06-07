@@ -20,6 +20,10 @@ class UserSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@softui.com',
             'password' => Hash::make('secret'),
+            'job' => 'Software Engineer',
+            'work_location' => 'San Francisco',
+            'examiner_name' => 'John Doe',
+            'age' => 30,
             'created_at' => now(),
             'updated_at' => now()
         ]);
