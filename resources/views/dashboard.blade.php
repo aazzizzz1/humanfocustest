@@ -18,22 +18,17 @@
         <div class="row gx-4 justify-content-between">
           <div class="col-lg-10">
             <div class="h-100">
+              <p>Nama: {{ Auth::user()->name }}</p>
+                <p>Usia: {{ Auth::user()->age }}</p>
+                <p>Departemen: {{ Auth::user()->location }}</p>
               <h5 class="mb-1">
                 Hasil
               </h5>
-              <p id="test-result" class="mb-0 font-weight-bold text-sm">
-              </p>
-              @foreach(Auth::user()->pdfs as $pdf)
-                    <tr>
-                      <td>{{ $pdf->file_name }}</td>
-                      <td><a href="{{ route('download.pdf', $pdf->id) }}">Download</a></td>
-                    </tr>
-                  @endforeach
             </div>
           </div>
           <div class="col-lg-2">
             <div class="h-100">
-              <button id="download-pdf-btn" class="btn btn-secondary">Download PDF</button>
+              <button id="download-pdf-btn" class="btn btn-secondary">Save and Download PDF</button>
               <table class="table">
                 <thead>
                   <tr>
@@ -137,50 +132,54 @@
       }
 
       function generatePDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
-    doc.text("Hasil Tes Waktu Reaksi Anda", 10, 10);
-    reactionTimes.forEach((time, index) => {
-        doc.text(`Tes ${index + 1}: ${time} ms`, 10, 20 + (index * 10));
-    });
+        const user = {!! auth()->user() !!};
 
-    const user = {!! auth()->user() !!};
+        doc.text(`Nama: ${user.name}`, 10, 40 + (reactionTimes.length * 10));
+        doc.text(`Email: ${user.email}`, 10, 50 + (reactionTimes.length * 10));
+        doc.text(`Departemen: ${user.location}`, 10, 60 + (reactionTimes.length * 10));
+        doc.text(`Nomor Telepon: ${user.phone}`, 10, 70 + (reactionTimes.length * 10));
+        doc.text(`Pekerjaan: ${user.job}`, 10, 80 + (reactionTimes.length * 10));
+        doc.text(`Tempat Kerja: ${user.work_location}`, 10, 90 + (reactionTimes.length * 10));
+        doc.text(`Umur: ${user.age}`, 10, 100 + (reactionTimes.length * 10));
+        doc.text(`Nama Penguji: ${user.examiner_name}`, 10, 110 + (reactionTimes.length * 10));
 
-    doc.text(`Nama: ${user.name}`, 10, 40 + (reactionTimes.length * 10));
-    doc.text(`Email: ${user.email}`, 10, 50 + (reactionTimes.length * 10));
-    doc.text(`Departemen: ${user.location}`, 10, 60 + (reactionTimes.length * 10));
-    doc.text(`Nomor Telepon: ${user.phone}`, 10, 70 + (reactionTimes.length * 10));
+        doc.text("Hasil Tes Waktu Reaksi Anda", 10, 10);
+        reactionTimes.forEach((time, index) => {
+            doc.text(`Tes ${index + 1}: ${time} ms`, 10, 20 + (index * 10));
+        });
 
-    var totalReactionTime = reactionTimes.reduce((a, b) => a + b, 0);
-    var averageReactionTime = totalReactionTime / reactionTimes.length;
+        var totalReactionTime = reactionTimes.reduce((a, b) => a + b, 0);
+        var averageReactionTime = totalReactionTime / reactionTimes.length;
 
-    doc.text(`\nWaktu Reaksi Rata-rata: ${averageReactionTime.toFixed(2)} ms`, 10, 80 + (reactionTimes.length * 10));
-    doc.text(`\nKriteria: ${testResult}`, 10, 90 + (reactionTimes.length * 10));
+        doc.text(`\nWaktu Reaksi Rata-rata: ${averageReactionTime.toFixed(2)} ms`, 10, 120 + (reactionTimes.length * 10));
+        doc.text(`\nKriteria: ${testResult}`, 10, 130 + (reactionTimes.length * 10));
 
-    const pdfOutput = doc.output('blob');
-    const formData = new FormData();
-    formData.append('pdf', pdfOutput, 'Hasil_Tes_Waktu_Reaksi.pdf');
+        const pdfOutput = doc.output('blob');
+        const formData = new FormData();
+        formData.append('pdf', pdfOutput, 'Hasil_Tes_Waktu_Reaksi.pdf');
 
-    $.ajax({
-        url: '{{ route("save.pdf") }}',
-        type: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            alert('PDF berhasil disimpan dan ditambahkan ke database.');
-        },
-        error: function(response) {
-            alert('Terjadi kesalahan saat menyimpan PDF.');
-        }
-    });
+        $.ajax({
+            url: '{{ route("save.pdf") }}',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert('PDF berhasil disimpan dan ditambahkan ke database.');
+            },
+            error: function(response) {
+                alert('Terjadi kesalahan saat menyimpan PDF.');
+            }
+        });
 
-    doc.save("Hasil_Tes_Waktu_Reaksi.pdf");
-}
+        doc.save("Hasil_Tes_Waktu_Reaksi.pdf");
+    }
 
       $("#download-pdf-btn").click(function () {
           generatePDF();
