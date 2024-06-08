@@ -3,6 +3,15 @@
 @section('content')
 <div class="container-fluid">
   <div class="card">
+    <div class="card-header">
+      <h4>Silakan Pilih Jenis Tes</h4>
+      <div>
+        <input type="radio" id="visual-test" name="test-type" value="visual" checked>
+        <label for="visual-test">Tes Visual</label>
+        <input type="radio" id="audio-test" name="test-type" value="audio">
+        <label for="audio-test">Tes Audio</label>
+      </div>
+    </div>
     <div id="reaction-time-container" class="page-header min-height-300 border-radius-xl">
       <button id="start-test-btn" class="btn btn-primary">Start Test</button>
     </div>
@@ -19,11 +28,12 @@
           <div class="col-lg-10">
             <div class="h-100">
               <p>Nama: {{ Auth::user()->name }}</p>
-                <p>Usia: {{ Auth::user()->age }}</p>
-                <p>Departemen: {{ Auth::user()->location }}</p>
+              <p>Usia: {{ Auth::user()->age }}</p>
+              <p>Departemen: {{ Auth::user()->location }}</p>
               <h5 class="mb-1">
                 Hasil
               </h5>
+              <p id="test-result" class="mb-0 font-weight-bold text-sm"></p>
             </div>
           </div>
           <div class="col-lg-2">
@@ -64,12 +74,17 @@
           if (!testInProgress) {
               testInProgress = true;
               $("#start-test-btn").prop("disabled", true);
-              runTest();
+              var testType = $('input[name="test-type"]:checked').val();
+              if (testType === 'visual') {
+                  runVisualTest();
+              } else {
+                  runAudioTest();
+              }
           }
       }
 
-      function runTest() {
-          var waitTime = Math.floor(Math.random() * 4) + 1;
+      function runVisualTest() {
+          var waitTime = Math.floor(Math.random() * 5) + 1;
           $("#reaction-time-container").css("background-color", "red");
           $("#test-result").html("Mohon Tunggu Sampai Berwarna Hijau...").show();
           setTimeout(function () {
@@ -83,7 +98,7 @@
               $(document).on("click", function () {
                   if (!clicked) {
                       userClickTime = new Date().getTime();
-                      var reactionTime = userClickTime - startTime - 300;
+                      var reactionTime = userClickTime - startTime - 240;
 
                       if (reactionTime <= 0) {
                           reactionTime = 0;
@@ -119,7 +134,71 @@
 
                               $("#test-result").html("<p>Waktu Reaksi: " + averageReactionTime.toFixed(2) + "ms</p><h5>Kriteria</h5><p>" + testResult + "</p>").show();
                           } else {
-                              setTimeout(runTest, 2000);
+                              setTimeout(runVisualTest, 2000);
+                          }
+                      } else {
+                          $("#test-result").html("Terlalu lambat! Silakan coba lagi.").show();
+                      }
+
+                      clicked = true;
+                  }
+              });
+          }, waitTime * 1000);
+      }
+
+      function runAudioTest() {
+          var waitTime = Math.floor(Math.random() * 5) + 1;
+          $("#reaction-time-container").css("background-color", "black");
+          $("#test-result").html("Mohon Tunggu Sampai Mendengar Suara...").show();
+          setTimeout(function () {
+              var startTime = new Date().getTime();
+              var audio = new Audio('https://www.soundjay.com/buttons/sounds/beep-08b.mp3');
+              audio.play();
+              $("#test-result").html("Tekan Sekarang!").show();
+
+              var userClickTime;
+              var clicked = false;
+
+              $(document).on("click", function () {
+                  if (!clicked) {
+                      userClickTime = new Date().getTime();
+                      var reactionTime = userClickTime - startTime - 240;
+
+                      if (reactionTime <= 0) {
+                          reactionTime = 0;
+                      }
+
+                      if (reactionTime <= 10000) {
+                          reactionTimes.push(reactionTime);
+                          testCount++;
+                          $("#test-result").html("Reaksi: " + reactionTime + "ms").show();
+                          $("#reaction-table-body").append("<tr><td>" + testCount + "</td><td>" + reactionTime + "</td></tr>");
+
+                          if (testCount === 20) {
+                              clearInterval(testInterval);
+                              testInProgress = false;
+                              $("#start-test-btn").prop("disabled", false);
+                              $("#reaction-time-container").css("background-color", "");
+                              $(document).off("click");
+
+                              var totalReactionTime = reactionTimes.reduce((a, b) => a + b, 0);
+                              var averageReactionTime = totalReactionTime / reactionTimes.length;
+
+                              if (averageReactionTime < 240 && testCount === 20) {
+                                  testResult = "Normal";
+                              } else if (averageReactionTime < 410 && averageReactionTime > 240 && testCount === 20) {
+                                  testResult = "Kelelahan Kerja Ringan (KKR)";
+                              } else if (averageReactionTime < 580 && averageReactionTime > 410 && testCount === 20) {
+                                  testResult = "Kelelahan Kerja Sedang (KKS)";
+                              } else if (averageReactionTime >= 580 && testCount === 20) {
+                                  testResult = "Kelelahan Kerja Berat (KKB)";
+                              } else {
+                                  testResult = "Anda perlu meningkatkan kecepatan reaksi.";
+                              }
+
+                              $("#test-result").html("<p>Waktu Reaksi: " + averageReactionTime.toFixed(2) + "ms</p><h5>Kriteria</h5><p>" + testResult + "</p>").show();
+                          } else {
+                              setTimeout(runAudioTest, 2000);
                           }
                       } else {
                           $("#test-result").html("Terlalu lambat! Silakan coba lagi.").show();
@@ -137,25 +216,25 @@
 
         const user = {!! auth()->user() !!};
 
-        doc.text(`Nama: ${user.name}`, 10, 40 + (reactionTimes.length * 10));
-        doc.text(`Email: ${user.email}`, 10, 50 + (reactionTimes.length * 10));
-        doc.text(`Departemen: ${user.location}`, 10, 60 + (reactionTimes.length * 10));
-        doc.text(`Nomor Telepon: ${user.phone}`, 10, 70 + (reactionTimes.length * 10));
-        doc.text(`Pekerjaan: ${user.job}`, 10, 80 + (reactionTimes.length * 10));
-        doc.text(`Tempat Kerja: ${user.work_location}`, 10, 90 + (reactionTimes.length * 10));
-        doc.text(`Umur: ${user.age}`, 10, 100 + (reactionTimes.length * 10));
-        doc.text(`Nama Penguji: ${user.examiner_name}`, 10, 110 + (reactionTimes.length * 10));
+        doc.text(`Nama: ${user.name}`, 10, 40);
+        doc.text(`Usia: ${user.age}`, 10, 50);
+        doc.text(`Departemen: ${user.location}`, 10, 60);
 
         doc.text("Hasil Tes Waktu Reaksi Anda", 10, 10);
+        
         reactionTimes.forEach((time, index) => {
-            doc.text(`Tes ${index + 1}: ${time} ms`, 10, 20 + (index * 10));
+            if (index < 10) {
+                doc.text(`Tes ${index + 1}: ${time} ms`, 10, 70 + (index * 10));
+            } else {
+                doc.text(`Tes ${index + 1}: ${time} ms`, 110, 70 + ((index - 10) * 10));
+            }
         });
 
         var totalReactionTime = reactionTimes.reduce((a, b) => a + b, 0);
         var averageReactionTime = totalReactionTime / reactionTimes.length;
 
-        doc.text(`\nWaktu Reaksi Rata-rata: ${averageReactionTime.toFixed(2)} ms`, 10, 120 + (reactionTimes.length * 10));
-        doc.text(`\nKriteria: ${testResult}`, 10, 130 + (reactionTimes.length * 10));
+        doc.text(`Waktu Reaksi Rata-rata: ${averageReactionTime.toFixed(2)} ms`, 10, 180);
+        doc.text(`Kriteria: ${testResult}`, 10, 190);
 
         const pdfOutput = doc.output('blob');
         const formData = new FormData();
