@@ -26,6 +26,10 @@ class InfoUserController extends Controller
             'phone'     => ['max:50'],
             'location' => ['max:70'],
             'about_me'    => ['max:150'],
+            'job'    => ['max:150'],
+            'work_location'    => ['max:150'],
+            'examiner_name'    => ['max:150'],
+            'age'    => ['max:150'],
         ]);
         if($request->get('email') != Auth::user()->email)
         {
@@ -51,6 +55,10 @@ class InfoUserController extends Controller
             'phone'     => $attributes['phone'],
             'location' => $attributes['location'],
             'about_me'    => $attributes["about_me"],
+            'job'    => $attributes["job"],
+            'work_location'    => $attributes["work_location"],
+            'examiner_name'    => $attributes["examiner_name"],
+            'age'    => $attributes["age"],
         ]);
         return redirect('/user-profile')->with('success','Profile updated successfully');
     }

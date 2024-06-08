@@ -168,52 +168,52 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="job" class="form-control-label">{{ __('Pekerjaan') }}</label>
+                              <div class="@error('job') border border-danger rounded-3 @enderror">
+                                <input class="form-control" type="text" id="job" name="job" value="{{ auth()->user()->job }}">
+                              </div>
+                              @error('job') <div class="text-danger">{{ $message }}</div> @enderror
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="work_location" class="form-control-label">{{ __('Lokasi Kerja') }}</label>
+                              <div class="@error('work_location') border border-danger rounded-3 @enderror">
+                                <input class="form-control" type="text" id="work_location" name="work_location" value="{{ auth()->user()->work_location }}">
+                              </div>
+                              @error('work_location') <div class="text-danger">{{ $message }}</div> @enderror
+                            </div>
+                          </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="examiner_name" class="form-control-label">{{ __('Nama Penguji') }}</label>
+                            <div class="@error('examiner_name') border border-danger rounded-3 @enderror">
+                              <input class="form-control" type="text" id="examiner_name" name="examiner_name" value="{{ auth()->user()->examiner_name }}">
+                            </div>
+                            @error('examiner_name') <div class="text-danger">{{ $message }}</div> @enderror
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="age" class="form-control-label">{{ __('Usia') }}</label>
+                            <div class="@error('age') border border-danger rounded-3 @enderror">
+                              <input class="form-control" type="number" id="age" name="age" value="{{ auth()->user()->age }}">
+                            </div>
+                            @error('age') <div class="text-danger">{{ $message }}</div> @enderror
+                          </div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="about">{{ 'Kriteria' }}</label>
                         <div class="@error('user.about')border border-danger rounded-3 @enderror">
                             <textarea class="form-control" id="about" rows="3" placeholder="Kriteria Hasil Tes Kamu" name="about_me">{{ auth()->user()->about_me }}</textarea>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="job" class="form-control-label">{{ __('Pekerjaan') }}</label>
-                          <div class="@error('job') border border-danger rounded-3 @enderror">
-                            <input class="form-control" type="text" id="job" name="job" value="{{ auth()->user()->job }}">
-                          </div>
-                          @error('job') <div class="text-danger">{{ $message }}</div> @enderror
-                        </div>
-                      </div>
-            
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="work_location" class="form-control-label">{{ __('Lokasi Kerja') }}</label>
-                          <div class="@error('work_location') border border-danger rounded-3 @enderror">
-                            <input class="form-control" type="text" id="work_location" name="work_location" value="{{ auth()->user()->work_location }}">
-                          </div>
-                          @error('work_location') <div class="text-danger">{{ $message }}</div> @enderror
-                        </div>
-                      </div>
-            
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="examiner_name" class="form-control-label">{{ __('Nama Penguji') }}</label>
-                          <div class="@error('examiner_name') border border-danger rounded-3 @enderror">
-                            <input class="form-control" type="text" id="examiner_name" name="examiner_name" value="{{ auth()->user()->examiner_name }}">
-                          </div>
-                          @error('examiner_name') <div class="text-danger">{{ $message }}</div> @enderror
-                        </div>
-                      </div>
-            
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="age" class="form-control-label">{{ __('Usia') }}</label>
-                          <div class="@error('age') border border-danger rounded-3 @enderror">
-                            <input class="form-control" type="number" id="age" name="age" value="{{ auth()->user()->age }}">
-                          </div>
-                          @error('age') <div class="text-danger">{{ $message }}</div> @enderror
-                        </div>
-                      </div>
-            
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4">{{ 'Save Changes' }}</button>
                     </div>
