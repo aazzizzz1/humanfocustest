@@ -211,54 +211,76 @@
       }
 
       function generatePDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-        const user = {!! auth()->user() !!};
+      const user = {!! json_encode(auth()->user()) !!}; // Gunakan json_encode untuk mendapatkan data pengguna sebagai objek JavaScript
 
-        doc.text(`Nama: ${user.name}`, 10, 40);
-        doc.text(`Usia: ${user.age}`, 10, 50);
-        doc.text(`Departemen: ${user.location}`, 10, 60);
+      // Tambahkan informasi pengguna di bagian atas PDF
+      doc.text(`Nama: ${user.name}`, 10, 20);
+      doc.text(`Usia: ${user.age}`, 10, 30);
+      doc.text(`Departemen: ${user.location}`, 10, 40);
+      doc.text(`Nomor Telepon: ${user.phone}`, 10, 50);
+      doc.text(`Pekerjaan: ${user.job}`, 10, 60);
+      doc.text(`Tempat Kerja: ${user.work_location}`, 10, 70);
+      doc.text(`Nama Penguji: ${user.examiner_name}`, 10, 80);
 
-        doc.text("Hasil Tes Waktu Reaksi Anda", 10, 10);
-        
-        reactionTimes.forEach((time, index) => {
-            if (index < 10) {
-                doc.text(`Tes ${index + 1}: ${time} ms`, 10, 70 + (index * 10));
-            } else {
-                doc.text(`Tes ${index + 1}: ${time} ms`, 110, 70 + ((index - 10) * 10));
-            }
-        });
+      // Dapatkan tanggal dan waktu saat ini
+      const currentDate = new Date();
+      const dateString = currentDate.toLocaleDateString();
+      const timeString = currentDate.toLocaleTimeString();
 
-        var totalReactionTime = reactionTimes.reduce((a, b) => a + b, 0);
-        var averageReactionTime = totalReactionTime / reactionTimes.length;
+      doc.text(`Tanggal: ${dateString}`, 10, 90);
+      doc.text(`Waktu: ${timeString}`, 10, 100);
 
-        doc.text(`Waktu Reaksi Rata-rata: ${averageReactionTime.toFixed(2)} ms`, 10, 180);
-        doc.text(`Kriteria: ${testResult}`, 10, 190);
+      // Tambahkan judul hasil tes
+      doc.text("Hasil Tes Waktu Reaksi Anda", 10, 120);
 
-        const pdfOutput = doc.output('blob');
-        const formData = new FormData();
-        formData.append('pdf', pdfOutput, 'Hasil_Tes_Waktu_Reaksi.pdf');
+      // Atur hasil tes menjadi dua kolom di bawah informasi pengguna
+      const leftColumnX = 10;
+      const rightColumnX = 110;
+      const yOffset = 130; // Awal Y untuk hasil tes
+      const rowHeight = 10;
 
-        $.ajax({
-            url: '{{ route("save.pdf") }}',
-            type: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                alert('PDF berhasil disimpan dan ditambahkan ke database.');
-            },
-            error: function(response) {
-                alert('Terjadi kesalahan saat menyimpan PDF.');
-            }
-        });
+      reactionTimes.forEach((time, index) => {
+          if (index < 10) {
+              doc.text(`Tes ${index + 1}: ${time} ms`, leftColumnX, yOffset + (index * rowHeight));
+          } else {
+              doc.text(`Tes ${index + 1}: ${time} ms`, rightColumnX, yOffset + ((index - 10) * rowHeight));
+          }
+      });
 
-        doc.save("Hasil_Tes_Waktu_Reaksi.pdf");
-    }
+      var totalReactionTime = reactionTimes.reduce((a, b) => a + b, 0);
+      var averageReactionTime = totalReactionTime / reactionTimes.length;
+
+      // Tambahkan hasil rata-rata dan kriteria di bawah hasil tes
+      const resultsYOffset = reactionTimes.length > 10 ? yOffset + ((reactionTimes.length - 10) * rowHeight) + 10 : yOffset + (reactionTimes.length * rowHeight);
+      doc.text(`Waktu Reaksi Rata-rata: ${averageReactionTime.toFixed(2)} ms`, 10, resultsYOffset);
+      doc.text(`Kriteria: ${testResult}`, 10, resultsYOffset + 10);
+
+      const pdfOutput = doc.output('blob');
+      const formData = new FormData();
+      formData.append('pdf', pdfOutput, 'Hasil_Tes_Waktu_Reaksi.pdf');
+
+      $.ajax({
+          url: '{{ route("save.pdf") }}',
+          type: 'POST',
+          headers: {
+              'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+              alert('PDF berhasil disimpan dan ditambahkan ke database.');
+          },
+          error: function(response) {
+              alert('Terjadi kesalahan saat menyimpan PDF.');
+          }
+      });
+
+      doc.save("Hasil_Tes_Waktu_Reaksi.pdf");
+      }
 
       $("#download-pdf-btn").click(function () {
           generatePDF();
